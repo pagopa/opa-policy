@@ -20,4 +20,4 @@ deny contains {
     semver.compare(v, minimum_terraform) < 0
 	
 }
-minimum_terraform := "1.11.0"
+minimum_terraform := "1.9.8"
