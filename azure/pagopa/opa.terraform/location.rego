@@ -1,9 +1,24 @@
-# Enforce a list of allowed locations / availability zones for each provider
-
 package azure.pagopa.opa.terraform.location
 
 import input as tfplan
 
+
+# METADATA
+# title: Check deployment resource location
+# description: Protocol in URL backend should be set to HTTPS
+# custom:
+#  severity: MEDIUM
+#  message: "is NOT allowed"
+#  label: pagoPa-OPA
+
+deny contains {
+		sprintf("%s | %s %s: %s '%s'", [annotation.custom.package_string, annotation.custom.label, location, annotation.description, resource.address])
+} if {
+    resource := tfplan.resource_changes[_]
+    location := get_location(resource, tfplan)
+    provider_name := get_basename(resource.provider_name)
+    not array_contains(allowed_locations[provider_name], location)
+}
 
 allowed_locations = {
     "azurerm": ["westeurope", "northeurope", "italynorth", "germanywestcentral", "global"]
@@ -33,15 +48,3 @@ get_location(resource, plan) = azure_location if {
     "azurerm" == provider_name
     azure_location := resource.change.after.location
 } 
-
-deny contains reason if {
-    resource := tfplan.resource_changes[_]
-    location := get_location(resource, tfplan)
-    provider_name := get_basename(resource.provider_name)
-    not array_contains(allowed_locations[provider_name], location)
-
-    reason := sprintf(
-        "%s: location %q is not allowed",
-        [resource.address, location]
-    )
-}
