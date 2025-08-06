@@ -11,6 +11,7 @@ package azure.global.opa.storage_account.replication
 deny contains {
 		sprintf("%s | %s %s: '%s'", [annotation.custom.package_string, annotation.custom.label, annotation.description, resource.address])
 } if {
+	annotation := rego.metadata.rule()
 	resource := input.resource_changes[_]
    	is_in_scope(resource, "azurerm_storage_account")
 	not validzrs(resource)

@@ -14,6 +14,7 @@ import input as tfplan
 deny contains {
 		sprintf("%s | %s %s: %s '%s'", [annotation.custom.package_string, annotation.custom.label, location, annotation.description, resource.address])
 } if {
+    annotation := rego.metadata.rule()
     resource := tfplan.resource_changes[_]
     location := get_location(resource, tfplan)
     provider_name := get_basename(resource.provider_name)
