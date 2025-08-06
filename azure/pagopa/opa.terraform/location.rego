@@ -5,10 +5,10 @@ import input as tfplan
 
 # METADATA
 # title: Check deployment resource location
-# description: Protocol in URL backend should be set to HTTPS
+# description: Location is NOT allowed
 # custom:
 #  severity: MEDIUM
-#  message: "is NOT allowed"
+#  package_string: azure.pagopa.opa.terraform.location
 #  label: pagoPa-OPA
 
 deny contains {
