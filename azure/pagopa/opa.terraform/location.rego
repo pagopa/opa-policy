@@ -5,14 +5,14 @@ import input as tfplan
 
 # METADATA
 # title: Check deployment resource location
-# description: Location is NOT allowed
+# description: location is NOT allowed
 # custom:
 #  severity: MEDIUM
 #  package_string: azure.pagopa.opa.terraform.location
 #  label: pagoPa-OPA
 
 deny contains {
-		sprintf("%s | %s %s: %s '%s'", [annotation.custom.package_string, annotation.custom.label, location, annotation.description, resource.address])
+		sprintf("%s | %s: '%s' %s '%s'", [annotation.custom.package_string, annotation.custom.label, location, annotation.description, resource.address])
 } if {
     annotation := rego.metadata.rule()
     resource := tfplan.resource_changes[_]
@@ -22,7 +22,7 @@ deny contains {
 }
 
 allowed_locations = {
-    "azurerm": ["westeurope", "northeurope", "italynorth", "germanywestcentral", "global"]
+    "azurerm": ["westeurope", "northeurope", "italynorth", "germanywestcentral", "global", "autoresolve"]
 }
 
 
