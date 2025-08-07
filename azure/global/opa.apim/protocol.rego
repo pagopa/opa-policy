@@ -1,16 +1,15 @@
 package azure.global.opa.apim.protocol
 
 # METADATA
-# title: Deny http backend
+# title: Check http backend protocol
 # description: Protocol in URL backend should be set to HTTPS
 # custom:
 #  severity: MEDIUM
 #  package_string: azure.global.opa.apim.protocol
-#  message: "Found HTTP protocol in URL backend: should be set to HTTPS"
 #  label: pagoPa-OPA
 
 deny contains {
-		sprintf("%s | %s %s: '%s'", [annotation.custom.package_string, annotation.custom.label, annotation.custom.message, resource.address])
+		sprintf("%s | %s %s: '%s'", [annotation.custom.package_string, annotation.custom.label, annotation.description, resource.address])
 } if {
 	resource := input.resource_changes[_]
 	annotation := rego.metadata.rule()

@@ -12,9 +12,6 @@ blast_radius := 100
 # weights assigned for each operation on each resource-type
 weights := {{"delete": 50, "create": 1, "modify": 20}}
 
-# Consider exactly these resource types in calculations
-resource_types := {"*"}
-
 #########
 # Policy
 #########
@@ -43,9 +40,9 @@ score := s if {
 	
 }
 
-####################
-# Terraform Library
-####################
+###########################################################################
+# Check on ALL resources for deletions, creations, modifications
+###########################################################################
 
 # list of all resources of a given type
 resources := all_resources if {
@@ -64,7 +61,6 @@ num_creates := num if {
 		"create" in res.change.actions
 	]
 	num := count(creates)
-	#print(num)
 }
 
 # number of deletions of resources of a given type
@@ -77,7 +73,6 @@ num_deletes := num if {
 	]
 
 	num := count(deletions)
-	#print(num)
 }
 
 # number of modifications to resources of a given type
@@ -90,5 +85,4 @@ num_modifies := num if {
 		"update" in res.change.actions
 	]
 	num := count(modifies)
-	#print(num)
 }
