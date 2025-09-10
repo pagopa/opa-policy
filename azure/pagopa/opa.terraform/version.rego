@@ -9,11 +9,10 @@ import rego.v1
 # custom:
 #  severity: MEDIUM
 #  package_string: azure.pagopa.opa.terraform.version
-#  message: "Terraform version is not supported"
 #  label: pagoPa-OPA
 
 deny contains {
-		sprintf("%s | %s %s: '%s' Minimum is '%s'", [annotation.custom.package_string, annotation.custom.label, annotation.custom.message, v, minimum_terraform])
+		sprintf("%s | %s %s: '%s' Minimum is '%s'", [annotation.custom.package_string, annotation.custom.label, annotation.description, v, minimum_terraform])
 } if {
     annotation := rego.metadata.rule()
     v := tfplan.terraform_version
