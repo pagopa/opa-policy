@@ -13,7 +13,7 @@ import input as tfplan
 import rego.v1
 
 # Deny rule for azurerm_network_security_group resources with inline security_rule blocks.
-# Iterates over every inline rule and flags any that use the bare wildcard as destination port.
+# Iterates over every inline rule and flags Allow rules that use the bare wildcard as destination port.
 deny contains {
 	sprintf("%s | %s %s: '%s'", [annotation.custom.package_string, annotation.custom.label, annotation.description, resource.address])
 } if {
@@ -22,11 +22,12 @@ deny contains {
 	resource := tfplan.resource_changes[_]
 	is_in_scope(resource, "azurerm_network_security_group")
 	security_rule := resource.change.after.security_rule[_]
+	security_rule.access == "Allow"
 	is_wildcard_port(security_rule.destination_port_range)
 }
 
 # Deny rule for standalone azurerm_network_security_rule resources.
-# Flags any resource whose destination_port_range is set to the bare wildcard.
+# Flags Allow rules whose destination_port_range is set to the bare wildcard.
 deny contains {
 	sprintf("%s | %s %s: '%s'", [annotation.custom.package_string, annotation.custom.label, annotation.description, resource.address])
 } if {
@@ -34,6 +35,7 @@ deny contains {
 	annotation := chain[count(chain) - 1].annotations
 	resource := tfplan.resource_changes[_]
 	is_in_scope(resource, "azurerm_network_security_rule")
+	resource.change.after.access == "Allow"
 	is_wildcard_port(resource.change.after.destination_port_range)
 }
 
