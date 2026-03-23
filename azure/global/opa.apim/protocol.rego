@@ -13,7 +13,7 @@ deny contains {
 } if {
 	resource := input.resource_changes[_]
 	annotation := rego.metadata.rule()
-	is_in_scope(resource, "azurerm_api_management_api_policy")
+	data.utils.is_in_scope(resource, "azurerm_api_management_api_policy")
 	uri_output := resource.change.after.xml_content
 	is_not_valid_uri(uri_output)
 	
@@ -21,12 +21,6 @@ deny contains {
 
 
 not_allowed_uri_protocol := "http://"
-
-is_in_scope(resource, type) if {
-	resource.mode == "managed"
-	data.utils.is_create_or_update(resource.change.actions)
-	resource.type == type
-}
 
 is_not_valid_uri(uri) if {
 	regex.match(not_allowed_uri_protocol, uri)

@@ -20,7 +20,7 @@ deny contains {
 	chain := rego.metadata.chain()
 	annotation := chain[count(chain) - 1].annotations
 	resource := tfplan.resource_changes[_]
-	is_in_scope(resource, "azurerm_network_security_group")
+	data.utils.is_in_scope(resource, "azurerm_network_security_group")
 	security_rule := resource.change.after.security_rule[_]
 	security_rule.access == "Allow"
 	is_wildcard_port(security_rule.destination_port_range)
@@ -34,17 +34,9 @@ deny contains {
 	chain := rego.metadata.chain()
 	annotation := chain[count(chain) - 1].annotations
 	resource := tfplan.resource_changes[_]
-	is_in_scope(resource, "azurerm_network_security_rule")
+	data.utils.is_in_scope(resource, "azurerm_network_security_rule")
 	resource.change.after.access == "Allow"
 	is_wildcard_port(resource.change.after.destination_port_range)
-}
-
-# Helper: returns true when the resource is a managed resource of the expected type
-# that is being created or updated.
-is_in_scope(resource, type) if {
-	resource.mode == "managed"
-	data.utils.is_create_or_update(resource.change.actions)
-	resource.type == type
 }
 
 # Helper: returns true when the given port range is the bare wildcard "*".
