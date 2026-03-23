@@ -26,9 +26,9 @@ is_in_scope(resource, type) if {
 }
 
 validzrs(resource) if {
-	resource.values.account_replication_type == "LRS"
+	resource.values.account_replication_type == "ZRS"
 }
 validgzrs(resource) if {
-	resource.values.account_replication_type == "GLRS"
+	resource.values.account_replication_type == "GZRS"
 }
 
