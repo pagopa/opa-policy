@@ -13,22 +13,16 @@ deny contains {
 } if {
 	annotation := rego.metadata.rule()
 	resource := input.resource_changes[_]
-   	is_in_scope(resource, "azurerm_storage_account")
+   	data.utils.is_in_scope(resource, "azurerm_storage_account")
 	not validzrs(resource)
 	not validgzrs(resource)
 	reason := sprintf("pagoPa-OPA: Storage Accounts should be ZRS or GZRS: '%s'", [resource.values.name])
 }
 
-is_in_scope(resource, type) if {
-    resource.type == type
-	data.utils.is_create_or_update(resource)
-	
-}
-
 validzrs(resource) if {
-	resource.values.account_replication_type == "LRS"
+	resource.values.account_replication_type == "ZRS"
 }
 validgzrs(resource) if {
-	resource.values.account_replication_type == "GLRS"
+	resource.values.account_replication_type == "GZRS"
 }
 
